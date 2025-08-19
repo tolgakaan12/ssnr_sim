@@ -12,7 +12,7 @@ from myosuite.envs.myo.myobase.pose_v0 import PoseEnvV0
 def main():
     env = DummyVecEnv([make_env])
     env = VecNormalize(env, norm_obs=True, norm_reward=False)
-    model = PPO.load("./elbow_gym/best_model.zip", env=env)
+    model = PPO.load("./RL/elbow_sb3/best_model", env=env)
     base_env = env.unwrapped.envs[0].unwrapped
     m, d = get_mj_model_data(base_env)
 

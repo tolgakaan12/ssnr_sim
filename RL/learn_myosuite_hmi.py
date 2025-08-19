@@ -4,20 +4,21 @@ from stable_baselines3.common.callbacks import EvalCallback
 from gymnasium.wrappers import TimeLimit
 from myosuite.utils import gym
 from stable_baselines3 import PPO
+from hmi_elbow_base import HmiElbowBase
 
 EPISODE_LENGTH = 1000  # Max episode length
 
 
 # Function to create monitored environment instances (and wraps them to be gym environments
 def make_env():
-    _env = gym.make('myoElbowPose1D6MRandom-v0', reset_type='random')
+    _env = HmiElbowBase(perturb_scale=5)
     _env = TimeLimit(_env, max_episode_steps=EPISODE_LENGTH)  # Apply time limit
     _env = Monitor(_env)  # Monitor for logging episode rewards & lengths
     return _env
 
 
 if __name__ == '__main__':
-    NUM_ENVS = 1  # Adjust based on available CPU cores
+    NUM_ENVS = 5  # Adjust based on available CPU cores
 
     # Create vectorized environments with monitoring
     # We could potentially use a different settings for the env maker for each parallel env, here we use the same
@@ -36,11 +37,11 @@ if __name__ == '__main__':
     # Training flag can change behaviour
     eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=False, training=False)
     eval_env = VecMonitor(eval_env)  # Ensures logging
-    eval_callback = EvalCallback(eval_env, best_model_save_path="./elbow_sb3/",
-                                 log_path="./elbow_sb3/", eval_freq=5_000, deterministic=True)  # Deterministic policy
+    eval_callback = EvalCallback(eval_env, best_model_save_path="./elbow_sb3_2/",
+                                 log_path="./elbow_sb3_2/", eval_freq=5_000, deterministic=True)  # Deterministic policy
 
     # Train the model
     model.learn(600_000, progress_bar=True, callback=eval_callback)
 
     # Save the model
-    model.save("./elbow_sb3/final_model")
+    model.save("./elbow_sb3_2/final_model")

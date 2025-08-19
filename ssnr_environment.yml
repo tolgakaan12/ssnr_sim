@@ -1,4 +1,4 @@
-name: ssnr_sim
+name: ssnr_sim3
 channels:
   - conda-forge
 dependencies:
